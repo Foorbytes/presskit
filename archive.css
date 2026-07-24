@@ -111,8 +111,11 @@
     border-bottom: 1px solid currentColor;
 }
 
-/* Article pages created before the shared mobile menu remain usable until normalized. */
-/* Official site cleanup trigger */
+body:not(.home-page):not(.game-page):not(.news-page) .site-footer a[href="badcredit.html"] {
+    display: none;
+}
+
+/* Archived articles use a compact fallback navigation on small screens. */
 @media (max-width: 760px) {
     .site-header:not(:has(.menu-toggle)) {
         position: relative;
