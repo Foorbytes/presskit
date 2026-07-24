@@ -6,6 +6,7 @@
     <meta name="description" content="Foorbytes is a solo indie game studio creating original, memorable games without intrusive monetization.">
     <title>Foorbytes | Solo Indie Game Studio</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="updates.css">
 </head>
 <body>
     <div class="site-shell">
@@ -16,8 +17,9 @@
             </a>
             <nav class="site-nav" aria-label="Main navigation">
                 <a href="#games">Games</a>
+                <a href="#news">News</a>
                 <a href="#about">About</a>
-                <a href="mailto:foorbits@icloud.com">Contact</a>
+                <a href="#contact">Contact</a>
             </nav>
         </header>
 
@@ -29,7 +31,7 @@
                     <p class="hero-lede">Foorbytes creates original games built around unusual ideas, memorable decisions, and the kind of moments players want to talk about afterward.</p>
                     <div class="button-row">
                         <a class="button button-primary" href="#games">View the games</a>
-                        <a class="button" href="mailto:foorbits@icloud.com">Contact Foorbytes</a>
+                        <a class="button" href="#contact">Contact Foorbytes</a>
                     </div>
                 </div>
 
@@ -89,9 +91,42 @@
                 </article>
             </section>
 
+            <section class="section-block" id="news">
+                <div class="section-heading">
+                    <span class="section-number">02 / News</span>
+                    <h2>Milestones, releases, and signs of life.</h2>
+                </div>
+
+                <div class="news-grid">
+                    <article class="news-card news-card-featured">
+                        <div class="news-meta">
+                            <span class="news-type news-type-warm">Milestone</span>
+                            <time datetime="2026-07-15">July 15, 2026</time>
+                        </div>
+                        <h3>Bad Credit? No Problem! passes one million App Store downloads</h3>
+                        <p>A strange little title loan game made by one developer has now been downloaded more than one million times on Apple’s App Store.</p>
+                        <div class="news-card-footer">
+                            <a class="news-link" href="million-downloads.html">Read the story →</a>
+                        </div>
+                    </article>
+
+                    <article class="news-card news-card-wide">
+                        <div class="news-meta">
+                            <span class="news-type">Studio news</span>
+                            <span>Latest updates</span>
+                        </div>
+                        <h3>More from Foorbytes</h3>
+                        <p>Follow new releases, development notes, and future game announcements from the studio.</p>
+                        <div class="news-card-footer">
+                            <a class="news-link" href="news.html">View all news →</a>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
             <section class="section-block" id="about">
                 <div class="section-heading">
-                    <span class="section-number">02 / About</span>
+                    <span class="section-number">03 / About</span>
                     <h2>A small studio with a very specific point of view.</h2>
                 </div>
 
@@ -115,16 +150,48 @@
             </section>
 
             <section class="section-block" id="contact">
-                <div class="contact-card">
-                    <div>
-                        <p class="eyebrow">Press, questions, or strange opportunities</p>
+                <div class="contact-layout">
+                    <div class="contact-copy">
+                        <p class="eyebrow">04 / Contact</p>
                         <h2>Let’s talk.</h2>
-                        <p>For press inquiries and general questions, contact Foorbytes directly.</p>
+                        <p>Use the form for press inquiries, review keys, questions, collaborations, or strange opportunities.</p>
+                        <div class="contact-details">
+                            <a href="mailto:foorbits@icloud.com">foorbits@icloud.com</a>
+                            <a href="https://discord.com/invite/vkA5VkzYuy" target="_blank" rel="noopener noreferrer">Join the Foorbytes Discord</a>
+                        </div>
                     </div>
-                    <div class="button-row">
-                        <a class="button button-primary" href="mailto:foorbits@icloud.com">foorbits@icloud.com</a>
-                        <a class="button" href="https://discord.com/invite/vkA5VkzYuy" target="_blank" rel="noopener noreferrer">Join Discord</a>
-                    </div>
+
+                    <form class="contact-form" data-email-form>
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label for="contact-name">Name</label>
+                                <input id="contact-name" name="name" type="text" autocomplete="name" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="contact-email">Email</label>
+                                <input id="contact-email" name="email" type="email" autocomplete="email" required>
+                            </div>
+                            <div class="form-field form-field-full">
+                                <label for="contact-topic">What is this about?</label>
+                                <select id="contact-topic" name="topic" required>
+                                    <option value="" selected disabled>Choose a topic</option>
+                                    <option value="Press inquiry">Press inquiry</option>
+                                    <option value="Review key request">Review key request</option>
+                                    <option value="Collaboration">Collaboration</option>
+                                    <option value="General question">General question</option>
+                                </select>
+                            </div>
+                            <div class="form-field form-field-full">
+                                <label for="contact-message">Message</label>
+                                <textarea id="contact-message" name="message" required></textarea>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="button button-primary" type="submit">Prepare email</button>
+                            <p class="form-note">This opens your email app with the message ready to send.</p>
+                        </div>
+                        <p class="form-status" data-form-status aria-live="polite"></p>
+                    </form>
                 </div>
             </section>
         </main>
@@ -132,11 +199,13 @@
         <footer class="site-footer">
             <span>© 2026 Foorbytes</span>
             <div class="footer-links">
+                <a href="news.html">News</a>
                 <a href="https://www.foorbytes.com" target="_blank" rel="noopener noreferrer">Website</a>
                 <a href="https://discord.com/invite/vkA5VkzYuy" target="_blank" rel="noopener noreferrer">Discord</a>
-                <a href="mailto:foorbits@icloud.com">Email</a>
+                <a href="#contact">Contact</a>
             </div>
         </footer>
     </div>
+    <script src="site.js"></script>
 </body>
 </html>
