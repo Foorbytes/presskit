@@ -1,0 +1,74 @@
+name: Final Foorbytes HTML cleanup
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove old terminology and align article navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          article_names = {
+              "million-downloads.html",
+              "steam-launch.html",
+              "steam-announcement.html",
+              "fright-night-files.html",
+              "100k-downloads.html",
+              "game-jam-to-release.html",
+              "google-play-preregistration.html",
+              "app-store-preorder.html",
+              "welcome-to-foorbytes.html",
+          }
+
+          header = '''<header class="site-header" data-site-header>
+        <a class="brand" href="index.html" aria-label="Foorbytes home">
+            <img src="assets/images/foorbytes-logo-horizontal.png" alt="Foorbytes">
+        </a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation" data-menu-toggle>
+            <span></span><span></span><span></span>
+            <span class="sr-only">Open menu</span>
+        </button>
+        <nav class="site-nav" id="site-navigation" aria-label="Main navigation" data-site-nav>
+            <a href="index.html">Home</a>
+            <a href="badcredit.html">Bad Credit? No Problem!</a>
+            <a class="is-current" href="news.html">News &amp; Events</a>
+            <a href="https://discord.gg/vkA5VkzYuy" target="_blank" rel="noopener noreferrer">Join Our Discord!</a>
+        </nav>
+    </header>'''
+
+          header_pattern = re.compile(r'<header class="site-header"[^>]*>.*?</header>', re.S)
+
+          for path in Path('.').glob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              text = text.replace('Press Kit', 'Game Page').replace('Press kit', 'Game page').replace('press kit', 'game page')
+              if path.name in article_names:
+                  text, count = header_pattern.subn(header, text, count=1)
+                  if count != 1:
+                      raise RuntimeError(f'Unable to replace article header in {path.name}')
+                  if '<script src="site.js"></script>' not in text:
+                      text = text.replace('</body>', '    <script src="site.js"></script>\n</body>')
+              path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit cleaned site
+        run: |
+          rm -f .github/workflows/final-html-cleanup.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Finish official Foorbytes site cleanup [skip ci]"
+          git push
