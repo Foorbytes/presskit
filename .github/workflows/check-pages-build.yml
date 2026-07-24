@@ -1,0 +1,56 @@
+name: Check Foorbytes Pages build
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Poll latest Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set +e
+          : > pages-build-status.json
+          for attempt in $(seq 1 24); do
+            gh api "repos/${GITHUB_REPOSITORY}/pages/builds/latest" > /tmp/latest-pages-build.json 2>/tmp/latest-pages-error.txt
+            STATUS=$?
+            if [ "$STATUS" -eq 0 ]; then
+              cp /tmp/latest-pages-build.json pages-build-status.json
+              BUILD_STATE=$(python3 - <<'PY'
+          import json
+          try:
+              print(json.load(open('/tmp/latest-pages-build.json')).get('status', 'unknown'))
+          except Exception:
+              print('unknown')
+          PY
+              )
+              echo "Attempt ${attempt}: ${BUILD_STATE}"
+              if [ "$BUILD_STATE" = "built" ] || [ "$BUILD_STATE" = "errored" ]; then
+                break
+              fi
+            else
+              printf '{"api_error": %s}\n' "$(python3 -c 'import json; print(json.dumps(open("/tmp/latest-pages-error.txt").read()))')" > pages-build-status.json
+              break
+            fi
+            sleep 5
+          done
+
+      - name: Commit status and remove workflow
+        run: |
+          rm -f .github/workflows/check-pages-build.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Record latest GitHub Pages build status [skip ci]"
+          git push
