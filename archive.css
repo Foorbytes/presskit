@@ -112,7 +112,7 @@
 }
 
 /* Article pages created before the shared mobile menu remain usable until normalized. */
-/* Normalizer trigger */
+/* Official site cleanup trigger */
 @media (max-width: 760px) {
     .site-header:not(:has(.menu-toggle)) {
         position: relative;
