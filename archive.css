@@ -111,6 +111,8 @@
     border-bottom: 1px solid currentColor;
 }
 
+/* Squarespace-inspired redesign marker */
+
 @media (max-width: 760px) {
     .article-header-image {
         margin-top: 36px;
