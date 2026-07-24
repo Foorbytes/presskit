@@ -111,10 +111,49 @@
     border-bottom: 1px solid currentColor;
 }
 
-/* Squarespace-inspired redesign marker */
-/* Full-site validation trigger */
-
+/* Article pages created before the shared mobile menu remain usable until normalized. */
 @media (max-width: 760px) {
+    .site-header:not(:has(.menu-toggle)) {
+        position: relative;
+        min-height: auto;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+        padding: 16px;
+        background: var(--black);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .site-header:not(:has(.menu-toggle)) .brand img {
+        width: 44px;
+        height: 44px;
+        object-fit: contain;
+    }
+
+    .site-header:not(:has(.menu-toggle)) .brand span {
+        display: inline;
+        font-size: 20px;
+    }
+
+    .site-header:not(:has(.menu-toggle)) .site-nav {
+        position: static;
+        display: flex;
+        padding: 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 16px;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+        background: transparent;
+    }
+
+    .site-header:not(:has(.menu-toggle)) .site-nav a {
+        font-size: 13px;
+        white-space: normal;
+    }
+
     .article-header-image {
         margin-top: 36px;
     }
