@@ -1,0 +1,54 @@
+name: Check live Foorbytes output
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  check-live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch live site without cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          CACHE_BUSTER=$(date +%s)
+          curl -L --fail --retry 3 \
+            -H 'Cache-Control: no-cache' \
+            "https://foorbytes.github.io/presskit/index.html?v=${CACHE_BUSTER}" \
+            -o /tmp/live-index.html
+
+          curl -L --fail --retry 3 \
+            -H 'Cache-Control: no-cache' \
+            "https://foorbytes.github.io/presskit/badcredit.html?v=${CACHE_BUSTER}" \
+            -o /tmp/live-game.html
+
+          {
+            echo "Live check time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "Index sha256: $(sha256sum /tmp/live-index.html | cut -d' ' -f1)"
+            echo "Repository index sha256: $(sha256sum index.html | cut -d' ' -f1)"
+            echo "Game sha256: $(sha256sum /tmp/live-game.html | cut -d' ' -f1)"
+            echo "Repository game sha256: $(sha256sum badcredit.html | cut -d' ' -f1)"
+            echo "Index contains redesigned marker: $(grep -q 'home-hero' /tmp/live-index.html && echo yes || echo no)"
+            echo "Index contains old Presskit Note: $(grep -q 'Presskit Note' /tmp/live-index.html && echo yes || echo no)"
+            echo "Game contains redesigned marker: $(grep -q 'game-banner-section' /tmp/live-game.html && echo yes || echo no)"
+            echo "Game contains old Press Kit heading: $(grep -q 'Press Kit - Bad Credit' /tmp/live-game.html && echo yes || echo no)"
+            echo ""
+            echo "Live index opening lines:"
+            head -n 35 /tmp/live-index.html
+          } > live-site-check.txt
+
+      - name: Commit check and remove workflow
+        run: |
+          rm -f .github/workflows/check-live-output.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Record live Foorbytes site output [skip ci]"
+          git push
