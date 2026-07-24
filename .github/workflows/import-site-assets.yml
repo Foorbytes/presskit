@@ -1,0 +1,162 @@
+name: Import site images
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/import-site-assets.yml
+
+permissions:
+  contents: write
+
+jobs:
+  import-assets:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download and prepare local images
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/images/store assets/images/screenshots assets/images/news
+
+          base64 --decode assets/million-downloads.webp.b64 > assets/images/million-downloads.webp
+
+          download() {
+            local url="$1"
+            local output="$2"
+            echo "Downloading $output"
+            curl --fail --location --retry 4 --retry-delay 2 --connect-timeout 20 --max-time 180 "$url" --output "$output"
+          }
+
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/0dc35551-fea4-471a-ad6d-ee979cba26e0/foorbytes-discord.png?format=2500w' 'assets/images/foorbytes-logo.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/7e70dad1-706a-46d4-9819-564fece402e6/long-banner.png' 'assets/images/store/steam-banner.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/73dec653-c1c8-4b6e-b686-57d7177da7dc/new_icon_1024.png' 'assets/images/store/app-icon.png'
+
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/7ddf9e68-14bb-4d80-93e5-209643250f74/new-job-iphone15.png' 'assets/images/screenshots/new-job.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/36662575-1ff0-40c5-b479-c867d1d84dc8/create-agent-iphone15.png' 'assets/images/screenshots/create-agent.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/da1d06c1-9da5-49c4-b4ea-745326f5060d/process-job-iphone15.png' 'assets/images/screenshots/process-job.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/70c44ea0-c4b4-4702-915a-65cc710f35ee/email-iphone15.png' 'assets/images/screenshots/email.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/bbd6d345-91c5-4e5f-b9c8-6d5841a2446b/earn-money-iphone15.png' 'assets/images/screenshots/earn-money.png'
+
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/18de4623-5a46-4eb0-8275-77f00b59f9a6/store_capsule_main.png' 'assets/images/news/steam-launch.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/0a8af52b-2db7-4b97-b484-2adce0d3800f/IMG_5728.jpeg' 'assets/images/news/steam-announcement.jpg'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/47b017ee-9126-428f-88a1-950af7f75e42/Screenshot%2B2024-10-02%2Bat%2B8.53.18%E2%80%AFAM.png' 'assets/images/news/fright-night.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/6af08d6a-7cb2-4068-80e0-ac40ae43b1b1/100milestone.png' 'assets/images/news/100k-downloads.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/e39b26be-4502-4a26-83ce-ccf92f4578f5/week1vsnow.png' 'assets/images/news/game-jam.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/1721824767174-CTOQKCPC6TOEMU0V1XP2/titlescreen.png' 'assets/images/news/prototype-title.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/1721223085074-613JOR2ALZ7TFOGK1WG2/process-job-iphone15.png' 'assets/images/news/game-jam-process.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/e2812dae-9193-4935-9f74-373172b20293/google-banner.png' 'assets/images/news/google-play.png'
+          download 'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/1721223081720-4CEV2LBDUYUEEG726Z9S/new-job-iphone15.png' 'assets/images/news/app-store-preorder.png'
+
+      - name: Rewrite site to use local assets
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/0dc35551-fea4-471a-ad6d-ee979cba26e0/foorbytes-discord.png?format=2500w': 'assets/images/foorbytes-logo.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/0dc35551-fea4-471a-ad6d-ee979cba26e0/foorbytes-discord.png': 'assets/images/foorbytes-logo.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/7e70dad1-706a-46d4-9819-564fece402e6/long-banner.png': 'assets/images/store/steam-banner.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/73dec653-c1c8-4b6e-b686-57d7177da7dc/new_icon_1024.png': 'assets/images/store/app-icon.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/7ddf9e68-14bb-4d80-93e5-209643250f74/new-job-iphone15.png': 'assets/images/screenshots/new-job.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/36662575-1ff0-40c5-b479-c867d1d84dc8/create-agent-iphone15.png': 'assets/images/screenshots/create-agent.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/da1d06c1-9da5-49c4-b4ea-745326f5060d/process-job-iphone15.png': 'assets/images/screenshots/process-job.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/70c44ea0-c4b4-4702-915a-65cc710f35ee/email-iphone15.png': 'assets/images/screenshots/email.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/bbd6d345-91c5-4e5f-b9c8-6d5841a2446b/earn-money-iphone15.png': 'assets/images/screenshots/earn-money.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/18de4623-5a46-4eb0-8275-77f00b59f9a6/store_capsule_main.png': 'assets/images/news/steam-launch.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/0a8af52b-2db7-4b97-b484-2adce0d3800f/IMG_5728.jpeg': 'assets/images/news/steam-announcement.jpg',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/47b017ee-9126-428f-88a1-950af7f75e42/Screenshot%2B2024-10-02%2Bat%2B8.53.18%E2%80%AFAM.png': 'assets/images/news/fright-night.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/6af08d6a-7cb2-4068-80e0-ac40ae43b1b1/100milestone.png': 'assets/images/news/100k-downloads.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/e39b26be-4502-4a26-83ce-ccf92f4578f5/week1vsnow.png': 'assets/images/news/game-jam.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/1721824767174-CTOQKCPC6TOEMU0V1XP2/titlescreen.png': 'assets/images/news/prototype-title.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/1721223085074-613JOR2ALZ7TFOGK1WG2/process-job-iphone15.png': 'assets/images/news/game-jam-process.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/e2812dae-9193-4935-9f74-373172b20293/google-banner.png': 'assets/images/news/google-play.png',
+              'https://images.squarespace-cdn.com/content/v1/663fce461ced224cfc020096/1721223081720-4CEV2LBDUYUEEG726Z9S/new-job-iphone15.png': 'assets/images/news/app-store-preorder.png',
+          }
+
+          for path in Path('.').glob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              for old, new in replacements.items():
+                  text = text.replace(old, new)
+              text = text.replace('View press kit', 'View game')
+              text = text.replace('Official press kit', 'Official game page')
+              text = text.replace('Press kit navigation', 'Game navigation')
+              text = text.replace('Press Kit', 'Game Page')
+              text = text.replace('Press kit', 'Game page')
+              text = text.replace('press kit', 'game page')
+              text = text.replace('https://www.foorbytes.com/badcreditnoproblem', 'badcredit.html')
+              text = text.replace('https://www.foorbytes.com', 'index.html')
+              path.write_text(text, encoding='utf-8')
+
+          index_path = Path('index.html')
+          index = index_path.read_text(encoding='utf-8')
+          if '<link rel="stylesheet" href="archive.css">' not in index:
+              index = index.replace('<link rel="stylesheet" href="updates.css">', '<link rel="stylesheet" href="updates.css">\n    <link rel="stylesheet" href="archive.css">')
+          index = index.replace('<span class="platform-tag">App Store</span>', '<span class="platform-tag">iOS App Store</span>')
+          first_news = '<article class="news-card news-card-featured">\n                        <div class="news-meta">'
+          first_news_with_image = '<article class="news-card news-card-featured archive-card">\n                        <a class="news-card-image" href="million-downloads.html"><img src="assets/images/million-downloads.webp" alt="Bad Credit? No Problem! one million iOS downloads celebration"></a>\n                        <div class="archive-card-content">\n                        <div class="news-meta">'
+          if first_news in index:
+              index = index.replace(first_news, first_news_with_image, 1)
+              index = index.replace('                            <a class="news-link" href="million-downloads.html">Read the story →</a>\n                        </div>\n                    </article>', '                            <a class="news-link" href="million-downloads.html">Read the story →</a>\n                        </div>\n                        </div>\n                    </article>', 1)
+          index_path.write_text(index, encoding='utf-8')
+
+          news_path = Path('news.html')
+          news = news_path.read_text(encoding='utf-8')
+          news = news.replace('assets/images/store/app-icon.png', 'assets/images/million-downloads.webp', 1)
+          news = news.replace('alt="Bad Credit? No Problem! app icon"', 'alt="Bad Credit? No Problem! one million iOS downloads celebration"', 1)
+          news_path.write_text(news, encoding='utf-8')
+
+          million_path = Path('million-downloads.html')
+          million = million_path.read_text(encoding='utf-8')
+          meta = '<div class="article-meta">\n                        <time datetime="2026-07-14">July 14, 2026</time>\n                        <span>Foorbytes</span>\n                        <span>Bad Credit? No Problem!</span>\n                    </div>'
+          figure = meta + '\n                    <figure class="article-header-image"><img src="assets/images/million-downloads.webp" alt="Bad Credit? No Problem! one million iOS downloads celebration"><figcaption class="article-caption">One million iOS downloads</figcaption></figure>'
+          if meta in million and 'assets/images/million-downloads.webp' not in million:
+              million = million.replace(meta, figure, 1)
+          million_path.write_text(million, encoding='utf-8')
+
+          badcredit_path = Path('badcredit.html')
+          badcredit = badcredit_path.read_text(encoding='utf-8')
+          badcredit = badcredit.replace('<title>Bad Credit? No Problem! | Game Page</title>', '<title>Bad Credit? No Problem! | Foorbytes</title>')
+          badcredit = badcredit.replace('Official game page', 'Bad Credit? No Problem!')
+          badcredit = badcredit.replace('aria-label="Game page navigation"', 'aria-label="Game navigation"')
+          badcredit_path.write_text(badcredit, encoding='utf-8')
+
+          for path in Path('.').glob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              text = text.replace('<a href="index.html" target="_blank" rel="noopener noreferrer">Foorbytes website</a>', '<a href="index.html">Foorbytes home</a>')
+              text = text.replace('<a href="badcredit.html" target="_blank" rel="noopener noreferrer">Game website</a>', '<a href="badcredit.html">Game page</a>')
+              text = text.replace('<a href="index.html" target="_blank" rel="noopener noreferrer">Website</a>', '<a href="badcredit.html">Game</a>')
+              path.write_text(text, encoding='utf-8')
+          PY
+
+          if grep -R 'images.squarespace-cdn.com' --include='*.html' .; then
+            echo 'Squarespace image reference remains in HTML.' >&2
+            exit 1
+          fi
+
+      - name: Remove temporary importer files
+        run: |
+          rm -f assets/million-downloads.webp.b64
+          rm -f .github/workflows/import-site-assets.yml
+
+      - name: Commit imported site assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Host site images locally and make game page official [skip ci]'
+          git push
