@@ -1,0 +1,69 @@
+name: Configure Foorbytes Pages source
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inspect and configure GitHub Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set +e
+          echo "GET current Pages settings" > pages-source-diagnostic.txt
+          gh api "repos/${GITHUB_REPOSITORY}/pages" >> pages-source-diagnostic.txt 2>&1
+          GET_STATUS=$?
+          echo "" >> pages-source-diagnostic.txt
+          echo "GET status: ${GET_STATUS}" >> pages-source-diagnostic.txt
+
+          cat > /tmp/pages-config.json <<'JSON'
+          {
+            "build_type": "legacy",
+            "source": {
+              "branch": "main",
+              "path": "/"
+            }
+          }
+          JSON
+
+          echo "" >> pages-source-diagnostic.txt
+          echo "PUT main /(root) publishing source" >> pages-source-diagnostic.txt
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" --input /tmp/pages-config.json >> pages-source-diagnostic.txt 2>&1
+          PUT_STATUS=$?
+          echo "" >> pages-source-diagnostic.txt
+          echo "PUT status: ${PUT_STATUS}" >> pages-source-diagnostic.txt
+
+          echo "" >> pages-source-diagnostic.txt
+          echo "GET updated Pages settings" >> pages-source-diagnostic.txt
+          gh api "repos/${GITHUB_REPOSITORY}/pages" >> pages-source-diagnostic.txt 2>&1
+          AFTER_STATUS=$?
+          echo "" >> pages-source-diagnostic.txt
+          echo "Updated GET status: ${AFTER_STATUS}" >> pages-source-diagnostic.txt
+
+          echo "" >> pages-source-diagnostic.txt
+          echo "Request fresh Pages build" >> pages-source-diagnostic.txt
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds" >> pages-source-diagnostic.txt 2>&1
+          BUILD_STATUS=$?
+          echo "" >> pages-source-diagnostic.txt
+          echo "Build request status: ${BUILD_STATUS}" >> pages-source-diagnostic.txt
+          exit 0
+
+      - name: Commit diagnostic and remove workflow
+        run: |
+          rm -f .github/workflows/configure-pages-source.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Record and configure GitHub Pages publishing source [skip ci]"
+          git push
