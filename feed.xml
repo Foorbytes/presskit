@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Foorbytes News &amp; Events</title>
+        <link>https://foorbytes.com/news.html</link>
+        <description>Release announcements, milestones, and development stories from Foorbytes.</description>
+        <language>en-us</language>
+        <lastBuildDate>Sat, 25 Jul 2026 02:00:00 GMT</lastBuildDate>
+        <atom:link href="https://foorbytes.com/feed.xml" rel="self" type="application/rss+xml" />
+        <image>
+            <url>https://foorbytes.com/assets/images/foorbytes-logo.png</url>
+            <title>Foorbytes News &amp; Events</title>
+            <link>https://foorbytes.com/news.html</link>
+        </image>
+        <item>
+            <title>Bad Credit? No Problem! Has Surpassed One Million Downloads on iOS</title>
+            <link>https://foorbytes.com/million-downloads.html</link>
+            <guid isPermaLink="true">https://foorbytes.com/million-downloads.html</guid>
+            <pubDate>Tue, 14 Jul 2026 12:00:00 GMT</pubDate>
+            <description>Bad Credit? No Problem! has passed one million first-time downloads on Apple’s App Store.</description>
+        </item>
+        <item>
+            <title>Solo Developer Launches Bad Credit? No Problem! on Steam</title>
+            <link>https://foorbytes.com/steam-launch.html</link>
+            <guid isPermaLink="true">https://foorbytes.com/steam-launch.html</guid>
+            <pubDate>Thu, 02 Oct 2025 12:00:00 GMT</pubDate>
+            <description>Bad Credit? No Problem! arrives on Steam with desktop controls, expanded content, and Steam Deck support.</description>
+        </item>
+        <item>
+            <title>Steam Edition Announced for October 2, 2025</title>
+            <link>https://foorbytes.com/steam-announcement.html</link>
+            <guid isPermaLink="true">https://foorbytes.com/steam-announcement.html</guid>
+            <pubDate>Wed, 10 Sep 2025 12:00:00 GMT</pubDate>
+            <description>Foorbytes announces the Steam edition of Bad Credit? No Problem! for October 2, 2025.</description>
+        </item>
+        <item>
+            <title>Fright Night Files Expansion Released</title>
+            <link>https://foorbytes.com/fright-night-files.html</link>
+            <guid isPermaLink="true">https://foorbytes.com/fright-night-files.html</guid>
+            <pubDate>Tue, 01 Oct 2024 12:00:00 GMT</pubDate>
+            <description>A cursed playing card traps Title 4 Cash inside an endless Halloween.</description>
+        </item>
+        <item>
+            <title>Bad Credit? No Problem! Surpasses 100K Downloads</title>
+            <link>https://foorbytes.com/100k-downloads.html</link>
+            <guid isPermaLink="true">https://foorbytes.com/100k-downloads.html</guid>
+            <pubDate>Fri, 30 Aug 2024 12:00:00 GMT</pubDate>
+            <description>Bad Credit? No Problem! reaches its first major download milestone less than a month after launch.</description>
+        </item>
+        <item>
+            <title>From Game Jam Prototype to Full Release</title>
+            <link>https://foorbytes.com/game-jam-to-release.html</link>
+            <guid isPermaLink="true">https://foorbytes.com/game-jam-to-release.html</guid>
+            <pubDate>Wed, 24 Jul 2024 12:00:00 GMT</pubDate>
+            <description>The development path from a 2015 game-jam prototype to the 2024 release of Bad Credit? No Problem!</description>
+        </item>
+        <item>
+            <title>Google Play Pre-Registration Opened</title>
+            <link>https://foorbytes.com/google-play-preregistration.html</link>
+            <guid isPermaLink="true">https://foorbytes.com/google-play-preregistration.html</guid>
+            <pubDate>Fri, 19 Jul 2024 12:00:00 GMT</pubDate>
+            <description>A preserved historical announcement from the game’s original mobile launch period.</description>
+        </item>
+        <item>
+            <title>Bad Credit? No Problem! Pre-Order Now</title>
+            <link>https://foorbytes.com/app-store-preorder.html</link>
+            <guid isPermaLink="true">https://foorbytes.com/app-store-preorder.html</guid>
+            <pubDate>Wed, 17 Jul 2024 14:00:00 GMT</pubDate>
+            <description>The original iOS preorder announcement ahead of the August 2024 launch.</description>
+        </item>
+        <item>
+            <title>Welcome to Foorbytes</title>
+            <link>https://foorbytes.com/welcome-to-foorbytes.html</link>
+            <guid isPermaLink="true">https://foorbytes.com/welcome-to-foorbytes.html</guid>
+            <pubDate>Wed, 17 Jul 2024 12:00:00 GMT</pubDate>
+            <description>The first post introducing Foorbytes and Bad Credit? No Problem!</description>
+        </item>
+    </channel>
+</rss>
