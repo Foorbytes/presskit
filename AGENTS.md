@@ -9,7 +9,7 @@ It is a static website hosted through GitHub Pages from:
 - Branch: `main`
 - Publishing folder: repository root
 - Public GitHub Pages URL: `https://foorbytes.github.io/presskit/`
-- Intended custom domain: `foorbytes.com`
+- Custom domain: `https://foorbytes.com`
 
 ## Technology
 
@@ -38,6 +38,15 @@ Do not introduce a framework, package manager, build process, database, server, 
 - Preserve all working Steam, App Store, Discord, YouTube, and email links.
 - YouTube-hosted video embeds are permitted.
 
+## Shared Site Shell
+
+- The header and footer must be visually and functionally identical on every public page in the sitemap.
+- `site.js` is the canonical source for the shared header and footer markup.
+- Every public HTML page must load `site.js` immediately before the closing `body` tag.
+- Do not create page-specific header or footer links, wording, logos, spacing, or navigation variants.
+- When changing the header or footer, edit the shared templates in `site.js` and verify the change across the entire sitemap.
+- Keep `sitemap.xml` current whenever a public page is added, renamed, redirected, or removed.
+
 ## Design Direction
 
 Match the visual language of the existing Foorbytes site:
@@ -60,7 +69,8 @@ Keep the site visually bold but uncomplicated.
 - `styles.css`: shared layout and visual system
 - `updates.css`: forms and article typography
 - `archive.css`: news and archived article styling
-- `site.js`: mobile navigation and contact form behavior
+- `site.js`: canonical header, footer, mobile navigation, and contact form behavior
+- `sitemap.xml`: complete public URL inventory for search engines
 - `assets/images/`: all website-owned image files
 
 ## Content Rules
@@ -96,8 +106,11 @@ Before committing website changes:
 - Verify all local images load.
 - Verify local page links work.
 - Verify the mobile menu opens and closes.
+- Verify the rendered header and footer match on every URL in `sitemap.xml`.
+- Verify every public HTML page loads `site.js`.
 - Preserve one clear `h1` per page.
 - Confirm the contact form still opens a prepared email.
+- Confirm `sitemap.xml` contains every public page and no removed page.
 - Do not leave diagnostic files, temporary scripts, or workflows behind.
 
 ## Change Safety
